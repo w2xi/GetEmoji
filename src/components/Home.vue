@@ -2,9 +2,12 @@
 import { ref } from 'vue'
 import imageData from '../../public/data.json'
 import { useRouter } from 'vue-router'
+import { buildSorter } from '../utils/common'
 
 export default {
-  setup() { 
+  setup() {
+    imageData.sort(buildSorter('total', 'DESC'))
+    
     const categories = ref(imageData)
     const router = useRouter()
 
@@ -14,27 +17,8 @@ export default {
 
     return {
       categories,
-      download,
       handleClick
     }
-  },
-
-  methods: {
-    // getCategories(){
-    //   const ms = import.meta.glob('../../public/image/**')
-
-    //   const set = new Set()
-
-    //   Object.keys(ms).forEach(key => {
-    //     const ret = key.match(/\/image\/(.+)?\//)
-
-    //     if ( ret && ret[1] ){
-    //       set.add(ret[1])
-    //     }
-    //   })
-
-    //   console.log([...set])
-    // },
   },
 }
 </script>
