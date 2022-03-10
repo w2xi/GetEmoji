@@ -1,11 +1,10 @@
-// const fs = require('fs')
 const { readdir, stat, writeFile } = require('fs/promises')
 const path = require('path')
 
 const pathname = '../../public/image'
 const cateObjs = []
 
-async function test(){
+async function getFiles(){
   try {
     const files = await readdir(pathname)
 
@@ -32,4 +31,4 @@ async function test(){
   }
 }
 
-test()
+getFiles()

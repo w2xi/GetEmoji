@@ -5,9 +5,18 @@
 
 <template>
   <router-view></router-view>
+  
+  <van-tabbar route>
+    <van-tabbar-item replace to="/bqb" icon="home-o">表情包</van-tabbar-item>
+    <van-tabbar-item replace to="/blog" icon="search">斗图</van-tabbar-item>
+    <van-tabbar-item replace to="/my" icon="friends-o">我的</van-tabbar-item>
+  </van-tabbar>
 </template>
 
 <style>
+html, body, #app {
+  height: 100%;
+}
 body {
   margin: 0;
 }
@@ -17,4 +26,5 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 </style>

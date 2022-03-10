@@ -41,31 +41,30 @@ export default {
     }
 
     let touchstartTime, touchendTime
+    let checkedObjs = {}
 
     const handleTouchstart = () => {
       touchstartTime = +new Date
     }
 
-    const handleTouchend = (url) => {
+    const handleTouchend = (ev, url) => {
       touchendTime = +new Date
 
       const diff = touchendTime - touchstartTime
 
       if ( diff < 300 ){
-        console.log('click');
+        console.log('click', url);
       }else {
         console.log('long click');
         showCheckbox.value = true
       }
     }
 
-    const checkedObjs = {}
-
     const handleClickCheckbox = (ev, url) => {
       const isChecked = ev.srcElement.checked
 
       if ( isChecked ){
-        checkedObjs[url] = ev.srcElement.checked  
+        checkedObjs[url] = ev.srcElement  
       }else {
         delete checkedObjs[url]
       }
@@ -83,6 +82,14 @@ export default {
       })
     }
 
+    const cancel = () => {
+      checkedNums.value = 0
+      showCheckbox.value = false
+      // reset checkbox
+      Object.values(checkedObjs).forEach(elem => elem.checked = false)
+      checkedObjs = {}
+    }
+
     return {
       imaegs,
       title,
@@ -92,6 +99,7 @@ export default {
       handleTouchstart,
       handleTouchend,
       download,
+      cancel,
       showCheckbox
     }
   },
@@ -101,9 +109,12 @@ export default {
 <template>
   <header class="header">
     <div class="back col-5" @click="router.go(-1)">{{ title }}</div>
-    <div class="info col-5" v-show="checkedNums > 0">
-      已选中 {{ checkedNums }} 项
-      <span @click="download">下载</span>
+    <div class="info col-5">
+      <template v-if="checkedNums > 0">
+        已选中 {{ checkedNums }} 项
+        <span class="action-download" @click="download">下载</span>
+      </template>
+      <span v-show="showCheckbox" class="action-cancel" @click="cancel">取消</span>
     </div>
   </header>
   <ul class="bqb-wrapper">
@@ -116,7 +127,7 @@ export default {
         <img
           class="bqb-img" 
           @touchstart="handleTouchstart(img)"
-          @touchend="handleTouchend(img)"
+          @touchend="handleTouchend($event, img)"
           :src="img" 
           :alt="img"
         />
@@ -160,8 +171,19 @@ export default {
 }
 
 .header .info {
+  font-size: 14px;
   text-align: right;
   margin-right: 15px;
+}
+
+.info .action-download {
+  display: inline-block;
+  font-weight: 600;
+  margin: 0 7px;
+}
+
+.info .action-cancel {
+  color: #666;
 }
 
 .bqb-wrapper {

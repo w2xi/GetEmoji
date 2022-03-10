@@ -7,5 +7,11 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     open: true,
+    proxy: {
+      '/api': {
+        target: 'http://auth-api.com',
+        changeOrigin: true,
+      }
+    },
   },
 })

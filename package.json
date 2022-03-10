@@ -13,6 +13,10 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.2.0",
+    "axios": "^0.26.1",
+    "stylus": "^0.56.0",
+    "stylus-loader": "^3.0.2",
+    "vant": "^3.4.5",
     "vite": "^2.8.0"
   }
 }
