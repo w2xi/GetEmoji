@@ -108,8 +108,8 @@ export default {
 
 <template>
   <header class="header">
-    <div class="back col-5" @click="router.go(-1)">{{ title }}</div>
-    <div class="info col-5">
+    <div class="go-back col-5" @click="router.go(-1)">{{ title }}</div>
+    <div class="extra-info col-5">
       <template v-if="checkedNums > 0">
         已选中 {{ checkedNums }} 项
         <span class="action-download" @click="download">下载</span>
@@ -117,8 +117,8 @@ export default {
       <span v-show="showCheckbox" class="action-cancel" @click="cancel">取消</span>
     </div>
   </header>
-  <ul class="bqb-wrapper">
-    <li class="bqb-row" v-for="(item,index) of imaegs" :key="index">
+  <div class="bqb-wrapper">
+    <div class="bqb-row" v-for="(item,index) of imaegs" :key="index">
       <div
         class="bqb-box"
         v-for="(img,idx) of item"
@@ -133,15 +133,14 @@ export default {
         />
         <input v-show="showCheckbox" @click="handleClickCheckbox($event, img)" class="checkbox" type="checkbox" />
       </div>
-    </li>
-  </ul>
+    </div>
+  </div>
 </template>
 
 <style scoped>
 .header {
   position: fixed;
   top: 0;
-  left: 0;
   width: 100%;
   display: flex;
   align-items: center;
@@ -150,7 +149,7 @@ export default {
   z-index: 1;
 }
 
-.back:before {
+.go-back:before {
   content: "";
   display: inline-block;
   -webkit-transform: rotate(45deg);
@@ -159,58 +158,70 @@ export default {
   height: .5rem;
   width: .5rem;
   border-width: 0 0 2px 2px;
-  border-color: #000;
+  border-color: #333;
   border-style: solid;
   margin: 0 5px 0 15px;
+  font-weight: normal;
 }
 
-.back {
-  display: flex;
-  align-items: center;
-  font-weight: bold;
-}
-
-.header .info {
+.header .extra-info {
   font-size: 14px;
   text-align: right;
   margin-right: 15px;
 }
 
-.info .action-download {
+.extra-info .action-download {
   display: inline-block;
   font-weight: 600;
   margin: 0 7px;
 }
 
-.info .action-cancel {
+.exta-info .action-cancel {
   color: #666;
 }
 
 .bqb-wrapper {
-  padding: 0 10px;
-  margin-top: 48px;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 5px;
+  margin-top: 55px;
 }
 
 .bqb-row {
   display: flex;
   width: 100%;
-  list-style-type: none;
+}
+
+.bqb-row:last-child {
+  margin-bottom: 55px;
 }
 
 .bqb-box {
-  width: 33%;
   position: relative;
+  width: 33%;
+  padding-bottom: 33%;
+}
+
+.bqb-box + .bqb-box {
+  margin-left: 5px;
 }
 
 .bqb-img {
-  max-width: 100%;
-  height: 120px;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0; left: 0;
+}
+
+@media screen and (min-width: 600px) {
+  .bqb-img {
+  }
 }
 
 .checkbox {
   position: absolute;
-  bottom: 5px;
-  right: 0;
+  bottom: 8px;
+  right: 3px;
 }
 
 .col-1 {

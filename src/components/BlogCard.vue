@@ -1,7 +1,7 @@
 <template>
 	<div class="blog-container" v-if="blog">
 		<div class="blog-title">
-			<img class="blog-avatar" :src="blog.user.avatar | imgPrefix" alt="avatar" />
+			<img class="blog-avatar" :src="imgPrefix(blog.user.avatar)" alt="avatar" />
 			<div class="blog-box">
 				<div class="blog-username">
 					{{ blog.user.username }}
@@ -11,14 +11,14 @@
 				</div>
 			</div>
 		</div>
-		<div class="blog-content" @click="goBlogDetail(blog.id)">
+		<div class="blog-content" @click="navToBlogDetail(blog.id)">
 			{{ blog.content }}
 		</div>
-		<div class="blog-image" @click.prevent="goBlogDetail(blog.id)">
+		<div class="blog-image" @click.prevent="navToBlogDetail(blog.id)">
 			<img 
 				class="image-item" 
 				v-for="(image,index) of blog.images"
-				:src="image | imgPrefix" 
+				:src="imgPrefix(image)" 
 				:key="index"
 			/>
 		</div>
@@ -26,14 +26,39 @@
 </template>
 
 <script>
+import { useRouter } from 'vue-router'
+
 export default {
 	props: {
-		blog: Object,
-	},
-	methods: {
-		goBlogDetail(id){
-			this.$emit('goBlogDetail', id);
+		blog: {
+			type: Object,
 		},
+	},
+
+	watch: {
+		blog: {
+			handler(newVal){
+				// console.log(newVal);
+			},
+			immediate: true,
+		}
+	},
+
+	setup(props, context){
+		const router = useRouter()
+
+		const imgPrefix = (value) => {
+			return value ? 'http://auth-api.com' + value : '/src/assets/images/default-avatar.jpg'
+		}
+
+		const navToBlogDetail = (id) => {
+			router.push(`/blog-detail/${id}`)
+		}
+
+		return {
+			imgPrefix,
+			navToBlogDetail,
+		}
 	},
 }	
 </script>

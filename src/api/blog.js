@@ -11,7 +11,7 @@ const blogAPI = {
 
   add(data){
     return request({
-      url: '/api/blog/add',
+      url: '/api/v1.blog/add',
       method: 'POST',
       data,
     })
@@ -19,7 +19,7 @@ const blogAPI = {
 
   detail(params){
     return request({
-      url: '/api/blog/detail',
+      url: '/api/v1.blog/detail',
       method: 'GET',
       params,
     })
@@ -27,7 +27,7 @@ const blogAPI = {
 
   search(params){
     return request({
-      url: '/api/blog/search',
+      url: '/api/v1.blog/search',
       method: 'GET',
       params,
     })
@@ -35,8 +35,9 @@ const blogAPI = {
 
   upload(data){
     return request({
-      url: '/api/blog/upload',
+      url: '/api/v1.blog/upload',
       method: 'POST',
+      headers: { 'Content-Type': 'multipart/form-data' },
       data,
     })
   },

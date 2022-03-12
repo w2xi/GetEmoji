@@ -6,7 +6,7 @@
       <div class="blog-post">
         <i 
           class="iconfont icon-fabu"
-          @click="$router.push('/blog-edit')"
+          @click="navToEdit"
         >
         </i>
       </div>
@@ -22,9 +22,8 @@
         v-for="item of blogList"
         :key="item.id"
       >
-        <blog-card 
-          :blog="item" 
-          @goBlogDetail="goBlogDetail"
+        <blog-card
+          :blog="item"
         />
       </div>
     </div>
@@ -32,6 +31,8 @@
 </template>
 
 <script>
+import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import SearchBar from './Search.vue'
 import BlogCard from './BlogCard.vue'
 import blogAPI from '../api/blog'
@@ -41,52 +42,43 @@ export default {
     BlogCard,
     SearchBar,
   },
-  data(){
-    return {
-      blogList: [],
-      count: 10,
+  
+  setup(){
+    const count = ref(10)
+    const blogList = ref([])
+    const router = useRouter()
+
+    const navToEdit = () => {
+      router.push('/blog-edit')
     }
-  },
 
-  created(){
-    this.getBlogs()
-  },
-
-  methods: {
-    getBlogs(){
-      const page = Math.ceil(this.blogList.length / this.count) + 1
+    const getBlogs = () => {
+      const page = Math.ceil(blogList.value.length / count.value) + 1
 
       blogAPI.get({
         page,
-        count: this.count,
+        count: count.value,
       }).then(res => {
-        console.log(res);
+        blogList.value = res.data
       })
-      // const { data: res } = await this.$_axios.get(this.$_api.blog_list, {
-      //   params: {
-      //     page,
-      //     count: this.count,
-      //   }
-      // })
-      // if ( res.code === 10000 ){
-      //   this.blogList = res.data
-      // }else{
-      //   Toast(res.msg)
-      // }
-    },
+    }
 
-    async handleSearch(keyword){
-      const {data: res} = await this.$_axios.get(this.$_api.search, { params: { keyword } })
+    const handleSearch = keyword => {
+      blogAPI.search({
+        keyword,
+      }).then(res => {
+        blogList.value = res.data
+      })
+    }
 
-      if ( res.code === 10000 ){
-        this.blogList = res.data
-      }else{
-        this.$toast(res.msg)
-      }
-    },
-    goBlogDetail(id){
-      this.$router.push(`/blog-detail/${id}`)
-    },
+    getBlogs()
+
+    return {
+      count,
+      blogList,
+      navToEdit,
+      handleSearch,
+    }
   },
 }  
 </script>
@@ -114,7 +106,7 @@ export default {
   .blog-search
     flex: 1  
 .blog-list
-  margin-top: 60px
+  margin: 60px 0 55px
   .blog-item + .blog-item
     margin-top: 10px
 </style>

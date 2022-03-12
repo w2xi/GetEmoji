@@ -44,97 +44,94 @@
 			</div>
 		</div>
 		<div class="footer">
-			<button @click="submitHandle">发布</button>
+			<button class="submit" @click="submitHandle">发布</button>
 		</div>
 	</div>
 </template>
 
 <script>
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { Toast } from 'vant'
+import blogAPI from '../api/blog'
 
 export default {
 	component: {
 		[Toast.name]: Toast,
 	},
-	data(){
-		return {
-			content: '',
-			imgSrcList: [],
-			imgFileList: [],
-			allowImgType: [
-				'image/png', 'image/jpg', 'image/jpeg', 'image/gif',
-			],
-			// 最大图片上传大小, 5M
-			maxImgSize: 1024*1024*5,
-			// 做多允许上传的图片数量
-			maxImgCounts: 9,
-		}
-	},
-	computed: {
-		showAddImgIcon(){
-			return this.imgFileList.length < this.maxImgCounts
-		},
-	},
-	methods: {
-		async submitHandle(){
-			if ( !this.content.trim() ){
+
+	setup(){
+		const router = useRouter()
+		const content = ref('')
+		const imgSrcList = ref([])
+		const imgFileList = []
+		const allowImgType = ['image/png', 'image/jpg', 'image/jpeg', 'image/gif']
+		// 最大图片上传大小, 5M
+		const maxImgSize = 1024*1024*5
+		// 做多允许上传的图片数量
+		const maxImgCounts = 9
+
+		const showAddImgIcon = computed(() => imgFileList.length < maxImgCounts)
+
+		const submitHandle = () => {
+			if ( !content.value.trim() ){
 				return Toast('请随便写点什么吧')
 			}
-			if ( this.imgFileList.length < 1 ) {
+			if ( imgFileList.length < 1 ) {
 				return Toast('请选择要上传的图片')
 			}
-			if ( this.imgFileList.length > this.maxImgCounts ){
+			if ( imgFileList.length > maxImgCounts ){
 				return Toast('最多只能上传9张图片')
 			}
+
 			Toast.loading({
         duration: 0,
         message: '发布中...',
         forbidClick: true,
       });
+
 			const formData = new FormData()
-			const config = {
-				headers: { 'Content-Type': 'multipart/form-data' }
-			}
-			Array.from(this.imgFileList).map((file)=>{
+
+			Array.from(imgFileList).map((file)=>{
 				formData.append('file[]', file);
 			})
-			const {data: res} = await this.$_axios.post(this.$_api.upload, formData, config)
-			console.log(res)
-			if ( res.code !== 10000 ){
-				Toast.fail('发布失败')
-				Toast.clear()
-				return
-			}
-			// 上传成功的图片  
-			const images = res.data
-			// 提交
-			this.$_axios.post(this.$_api.add_blog, {
-				images,
-				content: this.content,
-			}).then((res)=>{
-				Toast.success('发布成功')
-				Toast.clear()
-				this.$router.push('/blog')
-			}).catch(err=>{
-				Toast.fail('发布失败')
-				Toast.clear()
+
+			blogAPI.upload(formData).then(res => {
+				const images = res.data
+
+				blogAPI.add({
+					images, 
+					content: content.value,
+				}).then(() => {
+					Toast.success('发布成功')
+					Toast.clear()
+					router.push('/blog')
+				})
 			})
-		},
-		removeImageItem(index){
-			this.imgSrcList.splice(index, 1)
-			this.imgFileList.splice(index, 1)
-		},
-		uploadHandle(e){
+		}
+
+		// validate image type
+		const validType = (type) => {
+			return allowImgType.indexOf(type) !== -1
+		}
+
+		// validate image size
+		const validMaxSize = (size) => {
+			return size <= maxImgSize
+		}
+
+		const uploadHandle = (e) => {
 			const files = e.target.files
-			if ( files.length > this.maxImgCounts || this.imgFileList.length > this.maxImgCounts ){
+
+			if ( files.length > maxImgCounts || imgFileList.length > maxImgCounts ){
 				return Toast('最多只能上传9张图片')
 			}
 			
 			for ( const file of files ){
-				if ( !this._validType(file.type) ){
+				if ( !validType(file.type) ){
 					return Toast('图片类型错误')
 				}
-				if ( !this._validMaxSize(file.size) ){
+				if ( !validMaxSize(file.size) ){
 					return Toast('图片大小不能超过1M')
 				}
 				const reader = new FileReader()
@@ -142,20 +139,26 @@ export default {
 				reader.readAsDataURL(file)
 				// A handler for the load event. This event is triggered each time the reading operation is successfully completed.
 				reader.onload = ()=>{
-					this.imgSrcList.push(reader.result)
+					imgSrcList.value.push(reader.result)
 				}
-				this.imgFileList.push(file)
+				imgFileList.push(file)
 			}
 			// solving can't upload the same image
 			e.target.value = null
-		},
-		// validate image type
-		_validType(type){
-			return this.allowImgType.indexOf(type) !== -1
-		},
-		// validate image size
-		_validMaxSize(size){
-			return size <= this.maxImgSize
+		}
+
+		const removeImageItem = (index) => {
+			imgSrcList.value.splice(index, 1)
+			imgFileList.splice(index, 1)
+		}
+
+		return {
+			content,
+			imgSrcList,
+			showAddImgIcon,
+			submitHandle,
+			uploadHandle,
+			removeImageItem,
 		}
 	},
 }	
@@ -213,9 +216,10 @@ export default {
 	.icon-tianjia
 		font-size: 25px
 		color: #ccc
-button	
+
+.footer .submit	
 	position: fixed
-	bottom: 20px
+	bottom: 60px
 	right: 20px
 	padding: 10px 20px
 	font-size: 13px

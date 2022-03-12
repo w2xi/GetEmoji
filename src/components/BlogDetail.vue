@@ -24,30 +24,32 @@
 </template>
 
 <script>
+import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 import BlogCard from './BlogCard.vue'
+import blogAPI from '../api/blog'
 
 export default {
 	components: {
 		BlogCard,
 	},
-	data(){
-		return {
-			blog: null,
-		}
-	},
-	created(){
-		this.getBlogDetail(this.$route.params.id)
-	},
-	methods: {
-		async getBlogDetail(id){
-			const {data: res} = await this.$_axios.get(this.$_api.blog_detail, { params: { id } })
 
-			if ( res.code === 10000 ){
-				this.blog = res.data
-			}else{
-				this.$toast(res.msg)
-				this.$router.go(-1)
-			}
+	setup(){
+		const route = useRoute()
+		const blog = ref(null)
+
+		const getBlogDetail = () => {
+			blogAPI.detail({
+				id: route.params.id
+			}).then(res => {
+				blog.value = res.data
+			})
+		}
+
+		getBlogDetail()
+
+		return {
+			blog,
 		}
 	},
 }
