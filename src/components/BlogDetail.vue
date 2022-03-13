@@ -46,11 +46,14 @@ export default {
 			})
 		}
 
-		getBlogDetail()
-
 		return {
 			blog,
+			getBlogDetail,
 		}
+	},
+
+	created(){
+		this.getBlogDetail()
 	},
 }
 </script>

@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { reactive, ref } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import SearchBar from './Search.vue'
 import BlogCard from './BlogCard.vue'
@@ -71,14 +71,17 @@ export default {
       })
     }
 
-    getBlogs()
-
     return {
       count,
       blogList,
       navToEdit,
       handleSearch,
+      getBlogs,
     }
+  },
+
+  created(){
+    this.getBlogs()
   },
 }  
 </script>
