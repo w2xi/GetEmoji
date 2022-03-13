@@ -1,7 +1,16 @@
-# Vue 3 + Vite
+# GetEmoji
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+表情包资源来自: [https://github.com/getActivity/EmojiPackage](https://github.com/getActivity/EmojiPackage)
 
-## Recommended IDE Setup
+## Feature
 
-- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
+- [x] 表情包分类，表情包分类详情
+- [x] 下载表情包
+- [x] 斗图 发布动态, 模糊查询
+
+## TODO
+
+- [ ] 我的页面，登录注册
+- [ ] 斗图评论
+- [ ] 用 Express 重写 API 接口
+- [ ] 后台 CMS
