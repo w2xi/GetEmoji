@@ -63,8 +63,12 @@ export default {
   width: 100%;
 }
 
+.bqb-row + .bqb-row {
+  margin-top: 25px;
+}
+
 .bqb-row:last-child {
-  margin-bottom: 55px;
+  margin-bottom: 80px;
 }
 
 .bqb-item {
@@ -85,9 +89,13 @@ export default {
 }
 
 .bqb-category-name {
-  display: block;
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 100%;
   text-align: center;
-  font-size: 14px;
-  padding: 10px 0;
+  transform: translateX(-50%);
+  margin-top: 5px;
+  font-size: 15px;
 }
 </style>
