@@ -213,11 +213,6 @@ export default {
   top: 0; left: 0;
 }
 
-@media screen and (min-width: 600px) {
-  .bqb-img {
-  }
-}
-
 .checkbox {
   position: absolute;
   bottom: 8px;

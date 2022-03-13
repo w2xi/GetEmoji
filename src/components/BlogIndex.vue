@@ -33,9 +33,10 @@
 <script>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import SearchBar from './Search.vue'
+import SearchBar from './BlogSearch.vue'
 import BlogCard from './BlogCard.vue'
 import blogAPI from '../api/blog'
+import { Toast } from 'vant'
 
 export default {
   components: {
@@ -53,7 +54,7 @@ export default {
     }
 
     const getBlogs = () => {
-      const page = Math.ceil(blogList.value.length / count.value) + 1
+      const page = Math.ceil(blogList.length / count.value) + 1
 
       blogAPI.get({
         page,
@@ -64,10 +65,18 @@ export default {
     }
 
     const handleSearch = keyword => {
-      blogAPI.search({
+      Toast.loading({
+        message: '加载中...',
+        forbidClick: true,
+      })
+      blogAPI.get({
         keyword,
+        page: 1,
+        count: count.value,
       }).then(res => {
         blogList.value = res.data
+      }).finally(() => {
+        Toast.clear()
       })
     }
 

@@ -35,15 +35,6 @@ export default {
 		},
 	},
 
-	watch: {
-		blog: {
-			handler(newVal){
-				// console.log(newVal);
-			},
-			immediate: true,
-		}
-	},
-
 	setup(props, context){
 		const router = useRouter()
 
