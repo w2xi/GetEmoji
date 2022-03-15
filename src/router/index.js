@@ -5,6 +5,8 @@ import BlogIndex from '../components/BlogIndex.vue'
 import BlogDetail from '../components/BlogDetail.vue'
 import BlogEdit from '../components/BlogEdit.vue'
 import MyPage from '../components/MyPage.vue'
+import Login from '../components/Login.vue'
+import { getToken } from '../utils/auth'
 
 const routes = [
   {
@@ -19,7 +21,10 @@ const routes = [
   {
     path: '/bqb-detail',
     name: 'BqbDetail',
-    component: BqbDetail
+    component: BqbDetail,
+    meta: {
+      showTabbar: false,
+    },
   },
   {
     path: '/blog',
@@ -29,14 +34,24 @@ const routes = [
   {
 		path: '/blog-detail/:id',
 		component: BlogDetail,
+    meta: {
+      showTabbar: false,
+    },
 	},
 	{
 		path: '/blog-edit',
 		component: BlogEdit,
+    meta: {
+      showTabbar: false,
+    },
 	},
   {
     path: '/my',
     component: MyPage,
+  },
+  {
+    path: '/login',
+    component: Login,
   },
 ]
 
@@ -52,6 +67,26 @@ const router = createRouter({
       return { top: 0 }
     }
   },
+})
+
+const whiteList = ['/login']
+
+router.beforeEach((to, from, next) => {
+  const token = getToken()
+
+  if ( token ){
+    if ( to.path === '/login' ){
+      next('/')
+    }else {
+      next()
+    }
+  }else {
+    if ( whiteList.includes(to.path) ){
+      next()
+    }else {
+      next('/login')
+    }
+  }
 })
 
 export default router

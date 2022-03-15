@@ -17,11 +17,12 @@ request.interceptors.response.use(response => {
   if ( res.code !== 10000 ){
     Toast({
       type: 'fail',
+      duration: 5000,
       position: 'top',
       message: res.msg,
     })
 
-    return Promise.reject(new Error(res.message) || 'Error')
+    return Promise.reject(new Error(res.msg) || 'Error')
   }
 
   return res
