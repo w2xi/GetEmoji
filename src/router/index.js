@@ -11,7 +11,7 @@ import { getToken } from '../utils/auth'
 const routes = [
   {
     path: '/',
-    redirect: '/blog',
+    redirect: '/bqb',
   },
   {
     path: '/bqb',
@@ -52,6 +52,9 @@ const routes = [
   {
     path: '/login',
     component: Login,
+    meta: {
+      showTabbar: false,
+    }
   },
 ]
 

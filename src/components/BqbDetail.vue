@@ -193,7 +193,7 @@ export default {
 }
 
 .bqb-row:last-child {
-  margin-bottom: 55px;
+  margin-bottom: 15px;
 }
 
 .bqb-box {
